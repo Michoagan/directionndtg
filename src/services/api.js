@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+const baseURL = import.meta.env.PROD 
+    ? 'https://schoolndtg.onrender.com/api' 
+    : '/api';
+
 const api = axios.create({
-    baseURL: '/api', // Correct base for all modules
+    baseURL: baseURL, // Uses real backend in production, and local proxy in development
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
