@@ -22,14 +22,16 @@ const Card = ({ title, value, icon: Icon, color }) => (
 
 const CenseurDashboard = () => {
     const [stats, setStats] = useState(null);
+    const [cahiers, setCahiers] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const loadStats = async () => {
+        const loadData = async () => {
             try {
-                const response = await censeurService.getDashboardStats();
-                if (response.data && response.data.success) {
-                    setStats(response.data.data);
+                const statsRes = await censeurService.getDashboardStats();
+                
+                if (statsRes.data && statsRes.data.success) {
+                    setStats(statsRes.data.data);
                 }
             } catch (error) {
                 console.error("Erreur chargement dashboard", error);
@@ -37,7 +39,7 @@ const CenseurDashboard = () => {
                 setLoading(false);
             }
         };
-        loadStats();
+        loadData();
     }, []);
 
     if (loading) return <div className="text-center py-10">Chargement...</div>;
@@ -76,31 +78,70 @@ const CenseurDashboard = () => {
                 />
             </div>
 
-            {/* Recent Logs Section */}
+            {/* Statistiques de Prise de Décision Section */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <div className="p-6 border-b border-slate-100 flex justify-between items-center">
-                    <h2 className="text-lg font-semibold text-slate-900">Activités Récentes</h2>
+                    <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
+                        <Activity className="w-5 h-5 text-blue-600" />
+                        Statistiques de Prise de Décision (Performances par Salle)
+                    </h2>
                 </div>
-                <div className="divide-y divide-slate-100">
-                    {stats?.recent_logs && stats.recent_logs.length > 0 ? (
-                        stats.recent_logs.map((log) => (
-                            <div key={log.id} className="p-4 flex items-center justify-between hover:bg-slate-50">
-                                <div>
-                                    <p className="font-medium text-slate-900">
-                                        <span className="text-blue-600">[{log.action}]</span> {log.model}
-                                    </p>
-                                    <p className="text-sm text-slate-500">
-                                        Par {log.user_name} ({log.user_role})
-                                    </p>
-                                </div>
-                                <span className="text-xs text-slate-400">
-                                    {new Date(log.created_at).toLocaleString('fr-FR')}
-                                </span>
-                            </div>
-                        ))
-                    ) : (
-                        <div className="p-6 text-center text-slate-500">Aucune activité récente.</div>
-                    )}
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm">
+                        <thead className="bg-slate-50 text-slate-500 uppercase">
+                            <tr>
+                                <th className="px-6 py-4 font-medium">Classe</th>
+                                <th className="px-6 py-4 font-medium text-center">Effectif</th>
+                                <th className="px-6 py-4 font-medium text-center">Moyenne Générale</th>
+                                <th className="px-6 py-4 font-medium text-center">Taux de Réussite</th>
+                                <th className="px-6 py-4 font-medium text-center">Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                            {stats?.decision_stats && stats.decision_stats.length > 0 ? (
+                                stats.decision_stats.map((classe) => (
+                                    <tr key={classe.id} className="hover:bg-slate-50 transition-colors">
+                                        <td className="px-6 py-4 font-bold text-slate-800">
+                                            {classe.nom}
+                                        </td>
+                                        <td className="px-6 py-4 text-center text-slate-600">
+                                            {classe.effectif} élèves
+                                        </td>
+                                        <td className="px-6 py-4 text-center">
+                                            <span className={`font-bold ${classe.moyenne_generale >= 12 ? 'text-green-600' : classe.moyenne_generale >= 10 ? 'text-blue-600' : 'text-red-600'}`}>
+                                                {classe.moyenne_generale ? classe.moyenne_generale.toFixed(2) : '-'} / 20
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-center">
+                                            <div className="flex items-center justify-center gap-2">
+                                                <div className="w-24 bg-slate-200 rounded-full h-2.5">
+                                                    <div className={`h-2.5 rounded-full ${classe.taux_reussite >= 50 ? 'bg-green-500' : 'bg-red-500'}`} style={{ width: `${classe.taux_reussite}%` }}></div>
+                                                </div>
+                                                <span className="font-medium text-slate-700">{classe.taux_reussite}%</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-center">
+                                            {classe.moyenne_generale >= 12 ? (
+                                                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Excellent</span>
+                                            ) : classe.moyenne_generale >= 10 ? (
+                                                <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">Passable</span>
+                                            ) : classe.moyenne_generale > 0 ? (
+                                                <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold">Critique</span>
+                                            ) : (
+                                                <span className="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-xs font-bold">N/A</span>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="px-6 py-8 text-center text-slate-500">
+                                        Aucune donnée statistique disponible pour le moment.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
