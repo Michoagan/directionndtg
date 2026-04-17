@@ -157,6 +157,72 @@ export default function DirecteurDashboard() {
                 </div>
             </section>
 
+            {/* SECTION 4: STATISTIQUES DE PRISE DE DÉCISION (PERFORMANCES PAR SALLE) */}
+            <section className="space-y-4 pt-4">
+                <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-indigo-600" /> 4. Statistiques Pédagogiques (Prise de Décision)
+                </h2>
+                <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left text-sm">
+                            <thead className="bg-slate-50 text-slate-500 uppercase">
+                                <tr>
+                                    <th className="px-6 py-4 font-medium">Classe</th>
+                                    <th className="px-6 py-4 font-medium text-center">Effectif</th>
+                                    <th className="px-6 py-4 font-medium text-center">Moyenne Générale</th>
+                                    <th className="px-6 py-4 font-medium text-center">Taux de Réussite</th>
+                                    <th className="px-6 py-4 font-medium text-center">Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                                {statistiques.decision_stats && statistiques.decision_stats.length > 0 ? (
+                                    statistiques.decision_stats.map((classe) => (
+                                        <tr key={classe.id} className="hover:bg-slate-50 transition-colors">
+                                            <td className="px-6 py-4 font-bold text-slate-800">
+                                                {classe.nom}
+                                            </td>
+                                            <td className="px-6 py-4 text-center text-slate-600">
+                                                {classe.effectif} élèves
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <span className={`font-bold ${classe.moyenne_generale >= 12 ? 'text-emerald-600' : classe.moyenne_generale >= 10 ? 'text-blue-600' : classe.moyenne_generale > 0 ? 'text-red-600' : 'text-slate-400'}`}>
+                                                    {classe.moyenne_generale > 0 ? classe.moyenne_generale.toFixed(2) : '-'} / 20
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <div className="flex items-center justify-center gap-2">
+                                                    <div className="w-24 bg-slate-200 rounded-full h-2.5">
+                                                        <div className={`h-2.5 rounded-full ${classe.moyenne_generale > 0 ? (classe.taux_reussite >= 50 ? 'bg-emerald-500' : 'bg-red-500') : 'bg-slate-300'}`} style={{ width: `${classe.taux_reussite}%` }}></div>
+                                                    </div>
+                                                    <span className="font-medium text-slate-700">{classe.taux_reussite}%</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                {classe.moyenne_generale >= 12 ? (
+                                                    <span className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold">Excellent</span>
+                                                ) : classe.moyenne_generale >= 10 ? (
+                                                    <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">Passable</span>
+                                                ) : classe.moyenne_generale > 0 ? (
+                                                    <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold">Critique</span>
+                                                ) : (
+                                                    <span className="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-xs font-bold">N/A</span>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="5" className="px-6 py-8 text-center text-slate-500">
+                                            Aucune donnée statistique disponible pour le moment.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
         </div>
     );
 }
