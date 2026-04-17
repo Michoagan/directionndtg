@@ -39,12 +39,10 @@ const ValidationNotes = () => {
         loadRefs();
     }, []);
 
-    const fetchNotes = async () => {
-        if (!filters.classe_id || !filters.matiere_id) return;
-
+    const fetchNotes = async (currentFilters = filters) => {
         setLoading(true);
         try {
-            const response = await censeurService.getNotesValidation(filters);
+            const response = await censeurService.getNotesValidation(currentFilters);
             if (response.data && response.data.success) {
                 setNotes(response.data.notes || []);
             }
@@ -54,6 +52,12 @@ const ValidationNotes = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        // Fetch all unvalidated notes on page load without specific class/matiere filters
+        fetchNotes({ trimestre: filters.trimestre });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleValidateAll = async () => {
         if (!window.confirm("Valider toutes les notes affichées ?")) return;
@@ -111,11 +115,11 @@ const ValidationNotes = () => {
                         </select>
                     </div>
                     <button
-                        onClick={fetchNotes}
-                        disabled={!filters.classe_id || !filters.matiere_id || loading}
+                        onClick={() => fetchNotes(filters)}
+                        disabled={loading}
                         className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
                     >
-                        {loading ? 'Chargement...' : 'Afficher Notes'}
+                        {loading ? 'Chargement...' : 'Filtrer Notes'}
                     </button>
                 </div>
             </div>
@@ -142,6 +146,8 @@ const ValidationNotes = () => {
                             <thead className="text-xs text-slate-500 uppercase bg-slate-50">
                                 <tr>
                                     <th className="px-6 py-3">Élève</th>
+                                    <th className="px-6 py-3">Classe</th>
+                                    <th className="px-6 py-3">Matière</th>
                                     <th className="px-6 py-3 text-center">Moy. Interro</th>
                                     <th className="px-6 py-3 text-center">Devoir 1</th>
                                     <th className="px-6 py-3 text-center">Devoir 2</th>
@@ -153,7 +159,13 @@ const ValidationNotes = () => {
                                 {notes.map(note => (
                                     <tr key={note.id} className="hover:bg-slate-50">
                                         <td className="px-6 py-4 font-medium text-slate-900">
-                                            {note.eleve.nom} {note.eleve.prenom}
+                                            {note.eleve?.nom} {note.eleve?.prenom}
+                                        </td>
+                                        <td className="px-6 py-4 text-slate-600">
+                                            {note.classe?.nom}
+                                        </td>
+                                        <td className="px-6 py-4 text-slate-600">
+                                            {note.matiere?.nom}
                                         </td>
                                         <td className="px-6 py-4 text-center">{note.moyenne_interro ?? '-'}</td>
                                         <td className="px-6 py-4 text-center">{note.premier_devoir ?? '-'}</td>
