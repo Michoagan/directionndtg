@@ -36,18 +36,18 @@ const GestionEpreuves = () => {
     const fetchInitialData = async () => {
         try {
             setLoading(true);
-            const headers = { Authorization: `Bearer ${token}` };
 
             // On récupère les épreuves
-            const epreuvesRes = await axios.get('${import.meta.env.VITE_API_BASE_URL}/api/secretaire/epreuves', { headers });
+            const epreuvesRes = await api.get('/secretaire/epreuves');
             setEpreuves(epreuvesRes.data);
 
             // On récupère aussi matières et classes pour le formulaire
-            const matieresRes = await axios.get('${import.meta.env.VITE_API_BASE_URL}/api/matieres', { headers });
-            const classesRes = await axios.get('${import.meta.env.VITE_API_BASE_URL}/api/classes', { headers });
+            const matieresRes = await api.get('/classes/matieres');
+            const classesRes = await api.get('/classes/index');
 
-            setMatieres(matieresRes.data || matieresRes.data.data || []);
-            setClasses(classesRes.data || classesRes.data.data || []);
+            // Handle both possible response structures depending on how the backend returns data
+            setMatieres(matieresRes.data?.data || matieresRes.data?.matieres || matieresRes.data || []);
+            setClasses(classesRes.data?.data || classesRes.data?.classes || classesRes.data || []);
 
             setError(null);
         } catch (err) {
@@ -79,12 +79,9 @@ const GestionEpreuves = () => {
             data.append('type', formData.type);
             data.append('fichier', formData.fichier);
 
-            const headers = {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data'
-            };
-
-            const response = await axios.post('${import.meta.env.VITE_API_BASE_URL}/api/secretaire/epreuves', data, { headers });
+            const response = await api.post('/secretaire/epreuves', data, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
 
             setSuccess("Épreuve ajoutée avec succès !");
             setShowForm(false);
@@ -111,8 +108,7 @@ const GestionEpreuves = () => {
         if (!window.confirm("Voulez-vous vraiment supprimer cette épreuve ?")) return;
 
         try {
-            const headers = { Authorization: `Bearer ${token}` };
-            await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/secretaire/epreuves/${id}`, { headers });
+            await api.delete(`/secretaire/epreuves/${id}`);
             setSuccess("Épreuve supprimée avec succès.");
             fetchInitialData();
             setTimeout(() => setSuccess(null), 3000);
@@ -315,7 +311,7 @@ const GestionEpreuves = () => {
                                         <td className="p-4 text-right">
                                             <div className="flex justify-end gap-2">
                                                 <a
-                                                    href={`${import.meta.env.VITE_API_BASE_URL}/storage/${epreuve.file_path}`}
+                                                    href={`${api.defaults.baseURL.replace('/api', '')}/storage/${epreuve.file_path}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition"
