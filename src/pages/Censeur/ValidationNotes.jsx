@@ -54,8 +54,8 @@ const ValidationNotes = () => {
     };
 
     useEffect(() => {
-        // Fetch all unvalidated notes on page load without specific class/matiere filters
-        fetchNotes({ trimestre: filters.trimestre });
+        // Fetch all unvalidated notes on page load without ANY filters
+        fetchNotes({});
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
