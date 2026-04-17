@@ -44,7 +44,7 @@ const AdminDashboard = () => {
 
                 if (settingsData) {
                     setSettings({
-                        paiement_en_ligne_actif: settingsData.paiement_en_ligne_actif || 'true'
+                        paiement_en_ligne_actif: settingsData.paiement_en_ligne_actif !== undefined ? String(settingsData.paiement_en_ligne_actif) : '1'
                     });
                 }
             } catch (error) {
@@ -60,8 +60,8 @@ const AdminDashboard = () => {
     const handleTogglePayment = async () => {
         setTogglingPayment(true);
         try {
-            const isCurrentlyActive = settings.paiement_en_ligne_actif === 'true';
-            const newValue = isCurrentlyActive ? 'false' : 'true';
+            const isCurrentlyActive = settings.paiement_en_ligne_actif === '1' || settings.paiement_en_ligne_actif === 'true';
+            const newValue = isCurrentlyActive ? '0' : '1';
 
             const response = await updateSetting({
                 paiement_en_ligne_actif: newValue
@@ -81,7 +81,7 @@ const AdminDashboard = () => {
         }
     };
 
-    const isPaymentActive = settings.paiement_en_ligne_actif === 'true';
+    const isPaymentActive = settings.paiement_en_ligne_actif === '1' || settings.paiement_en_ligne_actif === 'true';
 
     if (loading) {
         return (
