@@ -61,7 +61,7 @@ const StudentForm = ({ isOpen, onClose, student, onSuccess }) => {
                 photo: null
             });
             if (student.photo) {
-                setPreviewUrl(`${import.meta.env.VITE_API_BASE_URL}/storage/${student.photo}`);
+                setPreviewUrl(`https://schoolndtg.onrender.com/storage/${student.photo}`);
             }
         }
     }, [student]);
