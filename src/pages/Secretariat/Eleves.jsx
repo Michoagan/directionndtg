@@ -3,6 +3,7 @@ import { getEleves, deleteEleve } from '../../services/secretariat';
 import { Plus, Upload, Search, Filter, Trash2, Edit, ChevronDown, ChevronRight, User } from 'lucide-react';
 import StudentForm from './components/StudentForm';
 import ImportStudent from './components/ImportStudent';
+import AffectationModal from './components/AffectationModal';
 
 const Eleves = () => {
     const [classes, setClasses] = useState([]);
@@ -10,6 +11,7 @@ const Eleves = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [isImportOpen, setIsImportOpen] = useState(false);
+    const [isAffectationOpen, setIsAffectationOpen] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [expandedClasses, setExpandedClasses] = useState({});
 
@@ -85,14 +87,21 @@ const Eleves = () => {
                         className="flex items-center space-x-2 px-4 py-2 bg-white border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition"
                     >
                         <Upload className="w-4 h-4" />
-                        <span>Importer (Excel/CSV)</span>
+                        <span className="hidden sm:inline">Importer</span>
+                    </button>
+                    <button
+                        onClick={() => setIsAffectationOpen(true)}
+                        className="flex items-center space-x-2 px-4 py-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 hover:bg-amber-100 transition shadow-sm"
+                    >
+                        <User className="w-4 h-4" />
+                        <span className="hidden sm:inline">Élèves en attente</span>
                     </button>
                     <button
                         onClick={handleCreate}
                         className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm"
                     >
                         <Plus className="w-4 h-4" />
-                        <span>Nouvelle Inscription</span>
+                        <span className="hidden sm:inline">Nouveau</span>
                     </button>
                 </div>
             </div>
@@ -161,7 +170,7 @@ const Eleves = () => {
                                                     <td className="px-4 py-3">
                                                         <div className="flex items-center">
                                                             {eleve.photo ? (
-                                                                <img src={`${import.meta.env.VITE_API_BASE_URL}/storage/${eleve.photo}`} alt="" className="w-8 h-8 rounded-full object-cover mr-3" />
+                                                                <img src={`https://schoolndtg.onrender.com/storage/${eleve.photo}`} alt="" className="w-8 h-8 rounded-full object-cover mr-3" />
                                                             ) : (
                                                                 <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center mr-3 text-slate-400">
                                                                     <User className="w-4 h-4" />
@@ -232,6 +241,14 @@ const Eleves = () => {
                 <ImportStudent
                     isOpen={isImportOpen}
                     onClose={() => setIsImportOpen(false)}
+                    onSuccess={fetchData}
+                />
+            )}
+
+            {isAffectationOpen && (
+                <AffectationModal
+                    isOpen={isAffectationOpen}
+                    onClose={() => setIsAffectationOpen(false)}
                     onSuccess={fetchData}
                 />
             )}
