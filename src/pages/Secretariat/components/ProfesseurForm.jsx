@@ -32,7 +32,7 @@ const ProfesseurForm = ({ isOpen, onClose, professeur, onSuccess }) => {
                 photo: null
             });
             if (professeur.photo) {
-                setPreviewUrl(`${import.meta.env.VITE_API_BASE_URL}/storage/professeurs/${professeur.photo}`);
+                setPreviewUrl(`https://schoolndtg.onrender.com/storage/professeurs/${professeur.photo}`);
             }
         }
     }, [professeur]);
