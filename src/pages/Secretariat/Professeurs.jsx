@@ -52,7 +52,7 @@ const Professeurs = () => {
     const filteredProfesseurs = professeurs.filter(p =>
         p.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.matiere.toLowerCase().includes(searchTerm.toLowerCase())
+        (p.matiere?.nom || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
@@ -111,7 +111,7 @@ const Professeurs = () => {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center">
                                                 {prof.photo ? (
-                                                    <img src={`${import.meta.env.VITE_API_BASE_URL}/storage/professeurs/${prof.photo}`} alt="" className="w-10 h-10 rounded-full object-cover mr-4" />
+                                                    <img src={`https://schoolndtg.onrender.com/storage/professeurs/${prof.photo}`} alt="" className="w-10 h-10 rounded-full object-cover mr-4" />
                                                 ) : (
                                                     <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mr-4 text-slate-400">
                                                         <User className="w-5 h-5" />
