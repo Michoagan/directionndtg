@@ -244,7 +244,7 @@ export default function Personnel() {
                                         <div className="flex items-center space-x-3">
                                             <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden">
                                                 {p.photo ? (
-                                                    <img src={`/storage/professeurs/${p.photo}`} alt="" className="w-full h-full object-cover" />
+                                                    <img src={`https://schoolndtg.onrender.com/storage/professeurs/${p.photo}`} alt="" className="w-full h-full object-cover" />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center text-slate-400 font-bold">
                                                         {p.first_name[0]}{p.last_name[0]}
