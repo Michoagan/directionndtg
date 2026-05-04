@@ -24,14 +24,16 @@ export default function ComptabiliteDashboard() {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [annee, setAnnee] = useState('');
 
     useEffect(() => {
-        loadData();
-    }, []);
+        loadData(annee);
+    }, [annee]);
 
-    const loadData = async () => {
+    const loadData = async (selectedAnnee) => {
         try {
-            const data = await getComptaDashboard();
+            setLoading(true);
+            const data = await getComptaDashboard(null, null, selectedAnnee);
             setStats(data);
         } catch (err) {
             console.error(err);
@@ -51,8 +53,24 @@ export default function ComptabiliteDashboard() {
                     <h1 className="text-3xl font-bold text-slate-800">Comptabilité Analytique</h1>
                     <p className="text-slate-500 mt-1">Bilan Financier et Inventaire Automatique</p>
                 </div>
-                <div className="bg-white border text-sm text-slate-600 px-4 py-2 rounded-lg shadow-sm">
-                    Période: <span className="font-semibold">{new Date(stats.period.start).toLocaleDateString()}</span> au <span className="font-semibold">{new Date(stats.period.end).toLocaleDateString()}</span>
+                <div className="flex items-center space-x-4">
+                    {stats.annees_disponibles && (
+                        <div className="flex items-center space-x-2 bg-white border text-sm text-slate-600 px-4 py-2 rounded-lg shadow-sm">
+                            <span className="font-medium text-slate-500">Année :</span>
+                            <select 
+                                value={stats.annee_scolaire_active} 
+                                onChange={(e) => setAnnee(e.target.value)}
+                                className="bg-transparent border-none text-sm font-bold text-slate-800 focus:ring-0 cursor-pointer outline-none"
+                            >
+                                {stats.annees_disponibles.map(a => (
+                                    <option key={a} value={a}>{a}</option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+                    <div className="bg-white border text-sm text-slate-600 px-4 py-2 rounded-lg shadow-sm">
+                        Période: <span className="font-semibold">{new Date(stats.period.start).toLocaleDateString()}</span> au <span className="font-semibold">{new Date(stats.period.end).toLocaleDateString()}</span>
+                    </div>
                 </div>
             </div>
 

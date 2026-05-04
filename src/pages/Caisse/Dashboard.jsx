@@ -6,15 +6,16 @@ export default function Dashboard() {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+    const [annee, setAnnee] = useState('');
 
     useEffect(() => {
-        fetchDashboard();
-    }, [date]);
+        fetchDashboard(annee);
+    }, [date, annee]);
 
-    const fetchDashboard = async () => {
+    const fetchDashboard = async (selectedAnnee) => {
         try {
             setLoading(true);
-            const data = await getCaisseDashboard(date);
+            const data = await getCaisseDashboard(date, selectedAnnee);
             setStats(data);
         } catch (error) {
             console.error("Erreur de chargement du dashboard caisse", error);
@@ -38,8 +39,23 @@ export default function Dashboard() {
                     <h1 className="text-2xl font-bold text-slate-800">Caisse - Tableau de bord</h1>
                     <p className="text-slate-500">Recettes du jour</p>
                 </div>
-                <div className="flex items-center space-x-2 bg-slate-50 px-4 py-2 rounded-lg border border-slate-200">
-                    <CalendarIcon className="w-5 h-5 text-slate-400" />
+                <div className="flex items-center space-x-4">
+                    {stats && stats.annees_disponibles && (
+                        <div className="flex items-center space-x-2 bg-slate-50 px-4 py-2 rounded-lg border border-slate-200">
+                            <span className="text-sm font-medium text-slate-600">Année :</span>
+                            <select 
+                                value={stats.annee_scolaire_active} 
+                                onChange={(e) => setAnnee(e.target.value)}
+                                className="bg-transparent border-none text-sm font-bold text-slate-800 focus:ring-0 cursor-pointer outline-none"
+                            >
+                                {stats.annees_disponibles.map(a => (
+                                    <option key={a} value={a}>{a}</option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+                    <div className="flex items-center space-x-2 bg-slate-50 px-4 py-2 rounded-lg border border-slate-200">
+                        <CalendarIcon className="w-5 h-5 text-slate-400" />
                     <input
                         type="date"
                         value={date}
@@ -47,7 +63,8 @@ export default function Dashboard() {
                         className="bg-transparent border-none outline-none font-medium text-slate-700"
                     />
                 </div>
-            </header>
+            </div>
+        </header>
 
             {stats && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

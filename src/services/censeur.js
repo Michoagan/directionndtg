@@ -2,7 +2,11 @@ import api from './api';
 
 const censeurService = {
     // Dashboard & Stats
-    getDashboardStats: () => api.get('/censeur/dashboard'),
+    getDashboardStats: (annee = null) => {
+        const params = new URLSearchParams();
+        if (annee) params.append('annee_scolaire', annee);
+        return api.get(`/censeur/dashboard?${params.toString()}`);
+    },
     getLogs: () => api.get('/censeur/logs'),
 
     // Programmation (Matières & Classes)
@@ -16,6 +20,9 @@ const censeurService = {
     getCahiersTexte: (filters = {}) => api.get('/censeur/cahiers-texte', { params: filters }),
 
     // Validation Notes
+    getNotesValidation: (params) => api.get('/censeur/notes/validation', { params }),
+    validateNotes: (noteIds, action) => api.post('/censeur/notes/validation', { note_ids: noteIds, action }),
+
     // Modification Notes
     getNotesForModification: (params) => api.get('/notes', { params }),
     storeNotesModification: (data) => api.post('/notes', data),

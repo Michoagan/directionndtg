@@ -94,6 +94,7 @@ export default function Paiements() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (submitting) return;
         if (!selectedStudent) {
             alert('Veuillez sélectionner un élève.');
             return;

@@ -3,9 +3,10 @@ import api from './api';
 const CAISSE_API = '/direction/caisse';
 
 // Dashboard
-export const getCaisseDashboard = async (date) => {
+export const getCaisseDashboard = async (date, anneeScolaire = null) => {
     const params = new URLSearchParams();
     if (date) params.append('date', date);
+    if (anneeScolaire) params.append('annee_scolaire', anneeScolaire);
 
     const response = await api.get(`${CAISSE_API}/dashboard?${params.toString()}`);
     return response.data;

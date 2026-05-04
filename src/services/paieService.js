@@ -1,14 +1,22 @@
 import api from './api';
 
 const paieService = {
-    // Récupère la liste des professeurs avec leurs taux horaires configurés
-    getConfiguration: () => api.get('/comptabilite/paie-professeurs/config'),
+    // Récupère les paramètres fixes
+    getConfiguration: () => api.get('/direction/comptabilite/paie-professeurs/config'),
 
-    // Sauvegarde les taux horaires et primes pour un professeur
-    saveConfiguration: (data) => api.post('/comptabilite/paie-professeurs/config', data),
+    // Sauvegarde les paramètres fixes
+    saveConfiguration: (data) => api.post('/direction/comptabilite/paie-professeurs/config', data),
 
-    // Génère la fiche de paie pour un mois donné (et optionnellement un prof spécifique)
-    genererPaie: (data) => api.post('/comptabilite/paie-professeurs/generer', data),
+    // Récupère les primes d'un mois spécifique
+    getPrimesMensuelles: (params) => api.get('/direction/comptabilite/paie-professeurs/primes', { params }),
+
+    // Sauvegarde les primes d'un mois spécifique
+    savePrimesMensuelles: (data) => api.post('/direction/comptabilite/paie-professeurs/primes', data),
+
+    // Génère la fiche de paie pour un mois donné
+    genererPaie: (data) => api.post('/direction/comptabilite/paie-professeurs/generer', data),
+    // Valider et envoyer les fiches de paie
+    validerPaies: (data) => api.post('/direction/comptabilite/paie-professeurs/valider', data),
 };
 
 export default paieService;

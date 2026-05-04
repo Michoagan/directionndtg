@@ -52,8 +52,8 @@ const Events = () => {
         // En attendant le service Classe, on simule des données ou on fait un appel direct
         // TODO: Utiliser le vrai service Classe
         try {
-            const response = await fetch('${import.meta.env.VITE_API_BASE_URL}/api/classes/index', { // URL brute temporaire
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            const response = await fetch('/api/classes/index', { // URL brute temporaire
+                headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
             });
             const data = await response.json();
             setClasses(data);

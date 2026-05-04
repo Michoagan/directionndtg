@@ -3,9 +3,9 @@ import api from './api';
 const DIRECTEUR_API = '/direction';
 
 // Dashboard
-export const getDirecteurDashboard = async () => {
+export const getDirecteurDashboard = async (params = {}) => {
     // Note: The route in api.php is '/direction/directeur' pointing to 'directeurDashboard'
-    const response = await api.get(`${DIRECTEUR_API}/directeur`);
+    const response = await api.get(`${DIRECTEUR_API}/directeur`, { params });
     return response.data;
 };
 
@@ -46,7 +46,9 @@ export const getProfesseurDetails = async (id) => {
 };
 
 // Analyse des performances du professeur (Assiduité, Programme, Impact)
-export const getTeacherPerformance = async (id) => {
-    const response = await api.get(`/professeurs/${id}/performance`);
+export const getTeacherPerformance = async (id, annee = null) => {
+    const params = new URLSearchParams();
+    if (annee) params.append('annee_scolaire', annee);
+    const response = await api.get(`/professeurs/${id}/performance?${params.toString()}`);
     return response.data;
 };

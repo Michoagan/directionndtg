@@ -22,6 +22,11 @@ export default defineConfig({
                 target: 'https://schoolndtg.onrender.com',
                 changeOrigin: true,
                 secure: false,
+            },
+            '/storage': {
+                target: 'https://schoolndtg.onrender.com',
+                changeOrigin: true,
+                secure: false,
             }
         }
     }

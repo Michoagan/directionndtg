@@ -7,10 +7,11 @@ import api from './api';
 const COMPTA_API = '/direction/comptabilite';
 
 // Dashboard
-export const getComptaDashboard = async (startDate, endDate) => {
+export const getComptaDashboard = async (startDate, endDate, anneeScolaire = null) => {
     const params = new URLSearchParams();
     if (startDate) params.append('start_date', startDate);
     if (endDate) params.append('end_date', endDate);
+    if (anneeScolaire) params.append('annee_scolaire', anneeScolaire);
 
     const response = await api.get(`${COMPTA_API}/dashboard?${params.toString()}`);
     return response.data;

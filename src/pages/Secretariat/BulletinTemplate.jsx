@@ -75,7 +75,7 @@ const BulletinTemplate = forwardRef(({ data, trimestre, anneeScolaire }, ref) =>
                 {eleve.photo ? (
                     <div className="ml-6 flex-shrink-0">
                         <img
-                            src={`${import.meta.env.VITE_API_BASE_URL}/storage/${eleve.photo}`}
+                            src={`/storage/${eleve.photo}`}
                             alt="Photo élève"
                             className="w-24 h-28 object-cover border-2 border-slate-300 rounded shadow-sm"
                         />

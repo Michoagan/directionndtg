@@ -13,15 +13,16 @@ const TeacherPerformance = () => {
     const [performance, setPerformance] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [annee, setAnnee] = useState('');
 
     useEffect(() => {
         fetchPerformance();
-    }, [id]);
+    }, [id, annee]);
 
     const fetchPerformance = async () => {
         try {
             setLoading(true);
-            const data = await getTeacherPerformance(id);
+            const data = await getTeacherPerformance(id, annee);
             setPerformance(data);
         } catch (err) {
             setError("Erreur lors du chargement des performances du professeur.");
@@ -50,14 +51,30 @@ const TeacherPerformance = () => {
     return (
         <div className="container mx-auto p-4 space-y-6">
             {/* Header */}
-            <div className="flex justify-between items-center bg-base-100 p-6 rounded-box shadow">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-base-100 p-6 rounded-box shadow gap-4">
                 <div>
                     <h1 className="text-2xl font-bold">{professeur.nom_complet}</h1>
                     <p className="text-gray-500">Matière: {professeur.matiere}</p>
                 </div>
-                <Link to="/direction/personnel" className="btn btn-outline">
-                    Retour à la liste
-                </Link>
+                <div className="flex items-center gap-4">
+                    {performance.annees_disponibles && (
+                        <div className="flex items-center space-x-2 bg-white border border-slate-200 text-sm text-slate-600 px-4 py-2 rounded-lg shadow-sm">
+                            <span className="font-medium text-slate-500">Année :</span>
+                            <select 
+                                value={performance.annee_scolaire_active} 
+                                onChange={(e) => setAnnee(e.target.value)}
+                                className="bg-transparent border-none text-sm font-bold text-slate-800 focus:ring-0 cursor-pointer outline-none"
+                            >
+                                {performance.annees_disponibles.map(a => (
+                                    <option key={a} value={a}>{a}</option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+                    <Link to="/direction/personnel" className="btn btn-outline">
+                        Retour à la liste
+                    </Link>
+                </div>
             </div>
 
             {/* KPI Cards */}

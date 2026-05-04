@@ -7,6 +7,16 @@ export const getEleves = async (filters = {}) => {
     return response.data;
 };
 
+export const getElevesEnAttente = async () => {
+    const response = await api.get('/secretaire/eleves/en-attente');
+    return response.data;
+};
+
+export const affecterClasses = async (data) => {
+    const response = await api.post('/secretaire/eleves/affecter', data);
+    return response.data;
+};
+
 export const createEleve = async (data) => {
     // data should be FormData if containing files (photo)
     const config = {};

@@ -73,7 +73,7 @@ const GestionCours = () => {
     };
 
     const handleSave = async () => {
-        if (!selectedClassId) return;
+        if (!selectedClassId || loading) return;
 
         // Validate inputs before saving
         const invalid = timetable.find(t => !t.matiere_id || !t.heure_debut || !t.heure_fin);
@@ -88,11 +88,14 @@ const GestionCours = () => {
             salle: t.salle || null,
         }));
 
+        setLoading(true);
         try {
             await censeurService.updateEmploiDuTemps(selectedClassId, { slots: payload });
             alert("Emploi du temps sauvegardé !");
         } catch (err) {
             alert("Erreur lors de la sauvegarde.");
+        } finally {
+            setLoading(false);
         }
     };
     const addSlot = (day) => {
@@ -153,11 +156,11 @@ const GestionCours = () => {
                     </select>
                     <button
                         onClick={handleSave}
-                        disabled={!selectedClassId}
+                        disabled={!selectedClassId || loading}
                         className="flex items-center space-x-2 bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition"
                     >
                         <Save className="w-4 h-4" />
-                        <span>Enregistrer</span>
+                        <span>{loading ? 'Enregistrement...' : 'Enregistrer'}</span>
                     </button>
                 </div>
             </div>

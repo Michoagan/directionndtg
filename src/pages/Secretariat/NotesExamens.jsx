@@ -25,15 +25,15 @@ const NotesExamens = () => {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
 
     // Initialiser Classes & Matieres
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
                 const headers = { Authorization: `Bearer ${token}` };
-                const resClasses = await axios.get('${import.meta.env.VITE_API_BASE_URL}/api/classes/index', { headers }); // Or wherever classes are fetched
-                const resMatieres = await axios.get('${import.meta.env.VITE_API_BASE_URL}/api/classes/matieres', { headers });
+                const resClasses = await axios.get('/api/classes/index', { headers }); // Or wherever classes are fetched
+                const resMatieres = await axios.get('/api/classes/matieres', { headers });
 
                 // Assuming standard formats based on previous patterns
                 setClasses(resClasses.data.data || resClasses.data || []);
@@ -68,7 +68,7 @@ const NotesExamens = () => {
                 ...(selectedMatiere && { matiere_id: selectedMatiere })
             };
 
-            const response = await axios.get('${import.meta.env.VITE_API_BASE_URL}/api/secretaire/notes-examens', {
+            const response = await axios.get('/api/secretaire/notes-examens', {
                 headers, params
             });
 
@@ -114,7 +114,7 @@ const NotesExamens = () => {
 
             const headers = { Authorization: `Bearer ${token}` };
 
-            const response = await axios.post('${import.meta.env.VITE_API_BASE_URL}/api/secretaire/notes-examens', payload, { headers });
+            const response = await axios.post('/api/secretaire/notes-examens', payload, { headers });
 
             setSuccess(`${response.data.count} notes enregistrées avec succès !`);
 

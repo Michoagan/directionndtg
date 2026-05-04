@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
-import { Calculator, Download, Loader2, Calendar } from 'lucide-react';
+import { Calculator, Download, Loader2, Calendar, Send } from 'lucide-react';
 import paieService from '../../../services/paieService';
+import { generateFicheDePaiePDF } from '../../../utils/pdfGenerator';
 
 const GenererPaie = () => {
     const [mois, setMois] = useState(new Date().getMonth() + 1);
@@ -10,6 +11,7 @@ const GenererPaie = () => {
     const [loading, setLoading] = useState(false);
     const [resultats, setResultats] = useState([]);
     const [message, setMessage] = useState(null);
+    const [validating, setValidating] = useState(false);
 
     const handleGenerer = async () => {
         setLoading(true);
@@ -27,6 +29,24 @@ const GenererPaie = () => {
             setMessage({ type: 'error', text: 'Erreur lors de la génération des paies.' });
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleValider = async () => {
+        if (!window.confirm("Voulez-vous vraiment valider ces fiches de paie et les envoyer dans les comptes des professeurs ?")) return;
+        
+        setValidating(true);
+        setMessage(null);
+        try {
+            const res = await paieService.validerPaies({ mois, annee });
+            if (res.data.success) {
+                setMessage({ type: 'info', text: res.data.message });
+            }
+        } catch (error) {
+            console.error("Erreur validation:", error);
+            setMessage({ type: 'error', text: 'Erreur lors de la validation des fiches de paie.' });
+        } finally {
+            setValidating(false);
         }
     };
 
@@ -131,7 +151,12 @@ const GenererPaie = () => {
                                             {formatCurrency(res.montant_total)}
                                         </td>
                                         <td className="px-6 py-4 text-center">
-                                            <Button variant="outline" size="sm" className="text-slate-600 border-slate-300">
+                                            <Button 
+                                                variant="outline" 
+                                                size="sm" 
+                                                className="text-slate-600 border-slate-300"
+                                                onClick={() => generateFicheDePaiePDF(res, mois, annee)}
+                                            >
                                                 <Download className="h-4 w-4 mr-1" /> Fiche
                                             </Button>
                                         </td>
@@ -139,6 +164,16 @@ const GenererPaie = () => {
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+                    <div className="p-4 bg-slate-50 border-t flex justify-end">
+                        <Button 
+                            onClick={handleValider}
+                            disabled={validating}
+                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                        >
+                            {validating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
+                            Valider et Envoyer aux Professeurs
+                        </Button>
                     </div>
                 </Card>
             )}

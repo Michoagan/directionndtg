@@ -125,8 +125,9 @@ const Programmation = () => {
     };
 
     const handleSave = async () => {
-        if (!selectedClasse) return;
+        if (!selectedClasse || loading) return;
 
+        setLoading(true);
         try {
             await Promise.all([
                 censeurService.saveProgrammation({
@@ -142,6 +143,8 @@ const Programmation = () => {
         } catch (error) {
             console.error("Erreur sauvegarde", error);
             alert("Erreur lors de l'enregistrement");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -175,7 +178,9 @@ const Programmation = () => {
             alert('Veuillez ajouter au moins une matière à composer.');
             return;
         }
+        if (loading) return;
 
+        setLoading(true);
         try {
             const payload = {
                 libelle: compLibelle,
@@ -197,6 +202,8 @@ const Programmation = () => {
         } catch (error) {
             console.error(error);
             alert(error.response?.data?.message || 'Erreur d\'enregistrement de la composition.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -348,10 +355,11 @@ const Programmation = () => {
                             <div className="flex justify-end pt-4">
                                 <button
                                     onClick={handleSave}
-                                    className="flex items-center space-x-2 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition shadow-sm"
+                                    disabled={loading || programmation.length === 0}
+                                    className="flex items-center space-x-2 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 transition shadow-sm"
                                 >
                                     <Save className="w-4 h-4" />
-                                    <span>Enregistrer la programmation</span>
+                                    <span>{loading ? 'Enregistrement...' : 'Enregistrer la programmation'}</span>
                                 </button>
                             </div>
 
@@ -548,10 +556,11 @@ const Programmation = () => {
                         <div className="flex justify-end pt-4">
                             <button
                                 onClick={handleSaveComposition}
-                                className="flex items-center space-x-2 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition"
+                                disabled={loading}
+                                className="flex items-center space-x-2 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 transition"
                             >
                                 <Save className="w-4 h-4" />
-                                <span>Puglier la session</span>
+                                <span>{loading ? 'Publication...' : 'Publier la session'}</span>
                             </button>
                         </div>
                     </div>

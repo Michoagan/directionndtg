@@ -50,8 +50,8 @@ const Discipline = () => {
 
     const fetchClasses = async () => {
         try {
-            const response = await fetch('${import.meta.env.VITE_API_BASE_URL}/api/classes/index', {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            const response = await fetch('/api/classes/index', {
+                headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
             });
             const data = await response.json();
             setClasses(data);
